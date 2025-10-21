@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   atlantis-plan:
-    if: github.event_name == 'pull_request'
+    if: ${{ github.event_name == 'pull_request' && secrets.ATLANTIS_URL != '' && secrets.ATLANTIS_TOKEN != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
