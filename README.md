@@ -127,6 +127,8 @@ make validate:smoke:offline  # Rung 6 — offline smoke and DNS stub
 ### Offline CI Workflow
 Pull requests automatically run the offline-only chain via `.github/workflows/validate-only.yml`. The job spins up Docker compose services (LocalStack, DynamoDB Local, KinD bootstrap, CoreDNS), executes the ladder targets, and tears everything down without touching AWS or GCP.
 
+To manually exercise the workflow, open a short-lived PR (even with documentation-only changes) so GitHub Actions runs `validate-only` against your branch.
+
 ## Repository Layout
 ```
 terraform/              # Infrastructure as code modules and environment compositions
