@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=iam,sts,secretsmanager,ssm,route53,s3
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - EDGE_PORT=4566
+      - DEBUG=0
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack-data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "bash", "-c", "awslocal sts get-caller-identity"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "/home/dynamodblocal/data"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+
+  kind-bootstrap:
+    image: alpine:3.18
+    privileged: true
+    environment:
+      - CLUSTER_NAME=arlo-local
+    volumes:
+      - ..:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /workspace
+    entrypoint: ["/bin/sh", "-c"]
+    command: >-
+      apk add --no-cache bash curl tar gzip iptables ebtables ca-certificates openssl && \
+      curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 && chmod +x /usr/local/bin/kind && \
+      curl -Lo /usr/local/bin/kubectl https://dl.k8s.io/release/v1.28.3/bin/linux/amd64/kubectl && chmod +x /usr/local/bin/kubectl && \
+      curl -L https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz | tar -xz -C /tmp && mv /tmp/linux-amd64/helm /usr/local/bin/helm && chmod +x /usr/local/bin/helm && \
+      /workspace/tools/local/kind-setup.sh || true
+
+  coredns:
+    image: coredns/coredns:1.11.1
+    command: ["-conf", "/etc/coredns/Corefile"]
+    ports:
+      - "15353:53/udp"
+      - "15353:53/tcp"
+    volumes:
+      - ./coredns/Corefile:/etc/coredns/Corefile:ro
+    depends_on:
+      - kind-bootstrap
+
+volumes:
+  localstack-data:
+  dynamodb-data:

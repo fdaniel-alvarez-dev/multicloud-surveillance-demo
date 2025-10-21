@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arlo-demo-app
+  namespace: api
+spec:
+  template:
+    metadata:
+      labels:
+        topology.kubernetes.io/region: us-central1
+        topology.kubernetes.io/zone: us-central1-a
+    spec:
+      containers:
+        - name: web
+          env:
+            - name: CLUSTER_NAME
+              value: "arlo-gke-cluster"
+            - name: CLUSTER_REGION
+              value: "us-central1"
+            - name: PRIMARY_PROVIDER
+              value: "gcp"
+            - name: FAILOVER_PROVIDER
+              value: "aws"
+            - name: SECRET_PROVIDER
+              value: "gcp-secret-manager"
+            - name: CLOUD_RUNNER
+              value: "gke-autopilot"
+      nodeSelector:
+        topology.kubernetes.io/region: us-central1
+      tolerations: []
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/region
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: arlo-demo-app

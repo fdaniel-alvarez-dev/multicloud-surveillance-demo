@@ -1,0 +1,18 @@
+version: 0.1.0
+resource_usage:
+  module.eks_cluster.aws_eks_node_group.workers:
+    nodes: 2
+    node_hours_per_month: 720
+  module.gke_cluster.google_container_node_pool.default:
+    nodes: 1
+    node_hours_per_month: 720
+  module.global_lb.aws_route53_health_check.primary:
+    health_check_requests_per_month: 20000
+  module.db_global.aws_dynamodb_table.primary:
+    monthly_write_request_units: 2000000
+    monthly_read_request_units: 4000000
+  module.db_global.aws_dynamodb_table.replica:
+    monthly_write_request_units: 2000000
+    monthly_read_request_units: 4000000
+  module.monitoring.aws_prometheus_workspace.main:
+    metrics_ingested_gb_per_month: 10

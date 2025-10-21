@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: arlo-multi-cloud
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: aws-eks
+            path: kubernetes/overlays/aws
+            namespace: api
+          - cluster: gcp-gke
+            path: kubernetes/overlays/gcp
+            namespace: api
+  template:
+    metadata:
+      name: '{{cluster}}-arlo-demo'
+      labels:
+        app.kubernetes.io/part-of: arlo-resilience
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/arlo-resilience/multi-cloud-arlo-demo.git
+        targetRevision: main
+        path: '{{path}}'
+        kustomize: {}
+      destination:
+        name: '{{cluster}}'
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+      revisionHistoryLimit: 3

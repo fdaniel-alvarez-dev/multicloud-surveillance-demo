@@ -1,0 +1,24 @@
+server:
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
+configs:
+  params:
+    server.insecure: true
+  cm:
+    application.instanceLabelKey: argo.argoproj.io/instance
+controller:
+  replicas: 1
+repoServer:
+  replicas: 1
+  extraArgs:
+    - --enable-helm
+redis:
+  enabled: true
+  metrics:
+    enabled: false
+applicationSet:
+  enabled: false
+notifications:
+  enabled: false

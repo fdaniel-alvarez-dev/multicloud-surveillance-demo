@@ -1,0 +1,10 @@
+.	{
+    log
+    errors
+    hosts {
+        127.0.0.1 api.arlo-resilience.com
+        ttl 10
+        fallthrough
+    }
+    forward . 1.1.1.1 8.8.8.8
+}

@@ -1,0 +1,46 @@
+global:
+  image:
+    tag: v2.9.3
+controller:
+  replicas: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+repoServer:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+  ingress:
+    enabled: true
+    ingressClassName: alb
+    hosts:
+      - argocd.arlo-resilience.com
+    tls:
+      - hosts:
+          - argocd.arlo-resilience.com
+        secretName: argocd-tls
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+applicationSet:
+  enabled: true
+configs:
+  cm:
+    timeout.reconciliation: 30s
+    statusbadge.enabled: "true"
+  params:
+    applicationsetcontroller.enable: "true"
+notifications:
+  enabled: true

@@ -1,0 +1,95 @@
+name: validate-only
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      MAX_MONTHLY_DELTA: "75"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.6.6"
+
+      - uses: terraform-linters/setup-tflint@v1
+        with:
+          tflint_version: v0.47.0
+
+      - uses: aquasecurity/setup-tfsec@v1
+        with:
+          version: v1.28.1
+
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: v1.28.3
+
+      - uses: azure/setup-helm@v3
+        with:
+          version: v3.12.3
+
+      - uses: imranismail/setup-kustomize@v2
+        with:
+          kustomize-version: "5.1.1"
+
+      - name: Install supporting CLIs
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck yamllint jq
+          TMP_DIR=$(mktemp -d)
+          curl -sSL https://github.com/open-policy-agent/conftest/releases/download/v0.45.0/conftest_0.45.0_Linux_x86_64.tar.gz | tar -xz -C "${TMP_DIR}"
+          sudo mv "${TMP_DIR}/conftest" /usr/local/bin/conftest
+          curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.6.4/kubeconform-linux-amd64.tar.gz | tar -xz -C "${TMP_DIR}"
+          sudo mv "${TMP_DIR}/kubeconform" /usr/local/bin/kubeconform
+          curl -Lo kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+          sudo mv kind /usr/local/bin/kind
+          sudo chmod +x /usr/local/bin/kind /usr/local/bin/conftest /usr/local/bin/kubeconform
+          curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sudo sh
+          rm -rf "${TMP_DIR}"
+
+      - name: Python tooling
+        run: |
+          pip install --upgrade pip
+          pip install pre-commit checkov
+
+      - name: Rung 0 — pre-commit
+        run: make validate:repo
+
+      - name: Rung 1 — Terraform static analysis
+        run: make validate:tf:static
+
+      - name: Rung 2 — Policy as code
+        run: make validate:tf:policy
+
+      - name: Rung 3 — Local plan
+        run: make validate:tf:plan-local
+
+      - name: Rung 4 — Cost estimate
+        run: make validate:cost
+
+      - name: Bootstrap KinD platform
+        run: |
+          docker compose -f tools/local/docker-compose.local.yml up -d
+          ./tools/local/kind-setup.sh --force-recreate
+
+      - name: Rung 5 — Kubernetes validation
+        run: make validate:k8s:local
+
+      - name: Rung 6 — Offline smoke
+        run: make validate:smoke:offline
+
+      - name: Cleanup local stack
+        if: always()
+        run: |
+          docker compose -f tools/local/docker-compose.local.yml down -v || true
+          kind delete cluster --name arlo-local || true

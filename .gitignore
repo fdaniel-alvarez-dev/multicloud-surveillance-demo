@@ -1,0 +1,52 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+*.plan
+plan.out
+plan.json
+terraform.rc
+.terraform.lock.hcl.backup
+
+# Terraform environment artifacts
+terraform/environments/**/plan.out
+terraform/environments/**/plan.json
+terraform/environments/**/.terraform/
+
+# Local tooling & kube configs
+kubeconfig
+*.kubeconfig
+*.kubeconfig.backup
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Node / JS
+node_modules/
+
+# Logs & coverage
+*.log
+coverage/
+*.coverage
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Misc
+*.retry
