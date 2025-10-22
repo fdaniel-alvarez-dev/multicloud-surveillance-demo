@@ -1,0 +1,4 @@
+This multicloud surveillance demo leans on familiar dependencies such as Python 3.11, OpenCV, TensorFlow Lite, Docker, and
+        Kubernetes to keep video analytics portable across environments.
+    Docker® is a registered trademark of Docker, Inc., and Kubernetes® is a registered trademark of The Linux Foundation®.
+    © 2025 Freddy Daniel Alvarez. All rights reserved.
