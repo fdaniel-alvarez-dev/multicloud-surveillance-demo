@@ -21,6 +21,7 @@ Multicloud Surveillance Platform is a production-ready reference implementation 
 - `FEATURES.md` — technical capabilities, integrations, and reference architecture diagrams.
 - `LICENSE` - Source code license (Apache-2.0) and usage terms.
 - `NOTICE` - Required third-party attributions and trademark notices.
+- `PRICING.md` - tiered plans covering deployment sizes.
 - `README.md` — tiered plans covering deployment sizes, retention windows, and support SLAs.
 - `docs/` — product story, runbooks, and onboarding guidance in English, Spanish, and Portuguese (Brazil).
 
