@@ -3,7 +3,7 @@
 ## English
 
 ### Repository Access (Self-Serve)
-- **Price:** $59 (launch promo: $53.10 for first 30 customers with code `LAUNCH10`).
+- **Price:** $49.99.
 - **Includes:** immediate GitHub access invites, "Start here" onboarding PDF, six months of updates (bug fixes + minor enhancements), and commercial license for one production deployment within your organization.
 - **Ideal for:** teams comfortable with self-service deployment who want to evaluate the platform quickly.
 - **Net revenue estimate:** ~$52.60 per sale after Gumroad fees; ~$47.29 with promo applied.
