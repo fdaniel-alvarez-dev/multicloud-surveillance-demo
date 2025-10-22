@@ -15,10 +15,19 @@ Multicloud Surveillance Platform is a production-ready reference implementation 
 3. **Explore dashboards** — review event timelines, incident heatmaps, and cost analytics described in `FEATURES.md` and localized docs under `docs/`.
 
 ## What This Repository Contains
+- `ASSETS-LICENSE` - States that docs, images, and diagrams are under CC BY 4.0 unless noted otherwise.
+- `COPYRIGHT` - Ownership and year notice for materials not covered by another license.
+- `DISCLAIMER` - Demo only: not for production, no warranty or support. 
 - `FEATURES.md` — technical capabilities, integrations, and reference architecture diagrams.
-- `PRICING.md` — tiered plans covering deployment sizes, retention windows, and support SLAs.
-- `screenshots/` — shot list describing the visuals we recommend showcasing in slide decks.
+- `LICENSE` - Source code license (Apache-2.0) and usage terms.
+- `NOTICE` - Required third-party attributions and trademark notices.
+- `README.md` — tiered plans covering deployment sizes, retention windows, and support SLAs.
 - `docs/` — product story, runbooks, and onboarding guidance in English, Spanish, and Portuguese (Brazil).
+
+## Licensing at a glance
+- **Code:** Apache-2.0 (see `LICENSE`)
+- **Docs & images:** CC BY 4.0 (see `ASSETS-LICENSE`)
+- **Disclaimer:** This is a demo; not for production, no warranty (`DISCLAIMER.md`).
 
 ## Need Help?
 For product walkthroughs, partner enablement, or tailored pricing scenarios, email `solutions@multicloud-surveillance.demo` or tag `@platform-team` in your internal support channel.
